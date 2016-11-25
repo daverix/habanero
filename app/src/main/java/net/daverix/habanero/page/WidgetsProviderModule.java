@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/*
     Standalone Android Client for OpenHAB server
     Copyright (C) 2016  David Laurell
 
@@ -15,13 +14,14 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/sites"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:clipToPadding="false" />
-</layout>
+*/
+package net.daverix.habanero.page;
+
+import dagger.Binds;
+import dagger.Module;
+
+@Module
+public abstract class WidgetsProviderModule {
+    @Binds
+    public abstract WidgetsProvider bindWidgetsProvider(OnlineWidgetsProvider provider);
+}

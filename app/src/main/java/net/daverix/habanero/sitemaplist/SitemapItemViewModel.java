@@ -17,27 +17,28 @@
 */
 package net.daverix.habanero.sitemaplist;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
+
 import net.daverix.habanero.PageOpener;
-import net.daverix.habanero.rest.OpenHabService;
 
-import javax.inject.Inject;
-
-import io.reactivex.Observable;
-
-public class OnlineSitemapsProvider implements SitemapsProvider {
-    private final OpenHabService openHabService;
+public class SitemapItemViewModel extends BaseObservable {
     private final PageOpener pageOpener;
+    private final String name;
+    private final String title;
 
-    @Inject
-    public OnlineSitemapsProvider(OpenHabService openHabService, PageOpener pageOpener) {
-        this.openHabService = openHabService;
+    public SitemapItemViewModel(String name, String title, PageOpener pageOpener) {
+        this.name = name;
+        this.title = title;
         this.pageOpener = pageOpener;
     }
 
-    @Override
-    public Observable<SitemapItemViewModel> getSitemaps() {
-        return openHabService.getSitemaps()
-                .flatMap(Observable::fromIterable)
-                .map(x -> new SitemapItemViewModel(x.getName(), x.getLabel(), pageOpener));
+    @Bindable
+    public String getTitle() {
+        return title;
+    }
+
+    public void onItemClicked() {
+        pageOpener.openPage(name, title);
     }
 }

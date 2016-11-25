@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package net.daverix.habanero.sitemaplist;
+package net.daverix.habanero.page;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -27,10 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.daverix.habanero.HabaneroApplication;
-import net.daverix.habanero.PageOpener;
-import net.daverix.habanero.PageOpenerModule;
 import net.daverix.habanero.R;
-import net.daverix.habanero.databinding.FragmentSitemapBinding;
+import net.daverix.habanero.databinding.FragmentPageBinding;
 
 import javax.inject.Inject;
 
@@ -38,35 +36,57 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class SitemapsFragment extends Fragment {
-    @Inject SitemapsProvider sitemapsProvider;
-    private SitemapListAdapter adapter;
-    private Disposable sitemapsDisposable;
+public class PageFragment extends Fragment {
+    private static final String ARG_NAME = "name";
+    private static final String ARG_TITLE = "title";
+
+    @Inject
+    WidgetsProvider widgetsProvider;
+    private WidgetListAdapter adapter;
+    private Disposable widgetsDisposable;
+
+    private String name;
+    private String title;
+
+    public static PageFragment newInstance(String name, String title) {
+        if (name == null)
+            throw new IllegalArgumentException("name is null");
+        if (title == null)
+            throw new IllegalArgumentException("title is null");
+
+        PageFragment fragment = new PageFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_NAME, name);
+        args.putString(ARG_TITLE, title);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Bundle args = getArguments();
+        if (args == null) throw new IllegalArgumentException("arguments not set");
+
+        name = args.getString(ARG_NAME);
+        title = args.getString(ARG_TITLE);
+
         ((HabaneroApplication) getActivity().getApplication())
                 .appComponent()
-                .sitemapComponentBuilder()
-                    .pageOpener(new PageOpenerModule((PageOpener) getActivity()))
-                    .build()
+                .pageComponentBuilder()
+                .build()
                 .inject(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        adapter = new SitemapListAdapter(inflater);
+        adapter = new WidgetListAdapter(inflater);
 
-        FragmentSitemapBinding binding = DataBindingUtil.inflate(inflater,
-                R.layout.fragment_sitemap,
-                container,
-                false);
-
-        binding.sites.setAdapter(adapter);
-        binding.sites.setLayoutManager(new LinearLayoutManager(getContext()));
+        FragmentPageBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page, container, false);
+        binding.pages.setAdapter(adapter);
+        binding.pages.setLayoutManager(new LinearLayoutManager(getContext()));
         return binding.getRoot();
     }
 
@@ -74,7 +94,7 @@ public class SitemapsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sitemapsDisposable = sitemapsProvider.getSitemaps()
+        widgetsDisposable = widgetsProvider.getWidgets(name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(adapter::addItem);
@@ -84,8 +104,7 @@ public class SitemapsFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        if(sitemapsDisposable != null) {
-            sitemapsDisposable.dispose();
-        }
+        if (widgetsDisposable != null)
+            widgetsDisposable.dispose();
     }
 }

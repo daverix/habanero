@@ -15,29 +15,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package net.daverix.habanero.sitemaplist;
-
-import net.daverix.habanero.PageOpener;
-import net.daverix.habanero.rest.OpenHabService;
-
-import javax.inject.Inject;
+package net.daverix.habanero.page;
 
 import io.reactivex.Observable;
 
-public class OnlineSitemapsProvider implements SitemapsProvider {
-    private final OpenHabService openHabService;
-    private final PageOpener pageOpener;
-
-    @Inject
-    public OnlineSitemapsProvider(OpenHabService openHabService, PageOpener pageOpener) {
-        this.openHabService = openHabService;
-        this.pageOpener = pageOpener;
-    }
-
-    @Override
-    public Observable<SitemapItemViewModel> getSitemaps() {
-        return openHabService.getSitemaps()
-                .flatMap(Observable::fromIterable)
-                .map(x -> new SitemapItemViewModel(x.getName(), x.getLabel(), pageOpener));
-    }
+public interface WidgetsProvider {
+    Observable<WidgetItemViewModel> getWidgets(String name);
 }

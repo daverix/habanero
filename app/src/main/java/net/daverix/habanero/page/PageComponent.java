@@ -15,22 +15,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package net.daverix.habanero.sitemaplist;
-
-import net.daverix.habanero.PageOpenerModule;
+package net.daverix.habanero.page;
 
 import dagger.Subcomponent;
 
 @Subcomponent(modules = {
-        PageOpenerModule.class,
-        SitemapListModule.class
+        WidgetsProviderModule.class
 })
-public interface SitemapsComponent {
-    void inject(SitemapsFragment sitemapsFragment);
+public interface PageComponent {
+    void inject(PageFragment fragment);
 
     @Subcomponent.Builder
     interface Builder {
-        Builder pageOpener(PageOpenerModule module);
-        SitemapsComponent build();
+        PageComponent build();
     }
 }

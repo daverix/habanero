@@ -15,29 +15,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package net.daverix.habanero.sitemaplist;
+package net.daverix.habanero.page;
 
-import net.daverix.habanero.PageOpener;
+import net.daverix.habanero.model.Page;
+import net.daverix.habanero.model.Sitemap;
 import net.daverix.habanero.rest.OpenHabService;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
-public class OnlineSitemapsProvider implements SitemapsProvider {
+public class OnlineWidgetsProvider implements WidgetsProvider {
     private final OpenHabService openHabService;
-    private final PageOpener pageOpener;
 
     @Inject
-    public OnlineSitemapsProvider(OpenHabService openHabService, PageOpener pageOpener) {
+    public OnlineWidgetsProvider(OpenHabService openHabService) {
         this.openHabService = openHabService;
-        this.pageOpener = pageOpener;
     }
 
     @Override
-    public Observable<SitemapItemViewModel> getSitemaps() {
-        return openHabService.getSitemaps()
-                .flatMap(Observable::fromIterable)
-                .map(x -> new SitemapItemViewModel(x.getName(), x.getLabel(), pageOpener));
+    public Observable<WidgetItemViewModel> getWidgets(String name) {
+        return openHabService.getSitemap(name)
+                .filter(x -> x.getHomepage() != null)
+                .map(Sitemap::getHomepage)
+                .filter(x -> x.getWidgets() != null)
+                .map(Page::getWidgets)
+                .flatMapObservable(Observable::fromIterable)
+                .map(x -> new WidgetItemViewModel(x.getLabel(), x.getIcon()));
     }
 }

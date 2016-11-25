@@ -19,8 +19,9 @@ package net.daverix.habanero;
 
 import android.app.Application;
 
+import net.daverix.habanero.page.PageComponent;
 import net.daverix.habanero.rest.RestModule;
-import net.daverix.habanero.sitemaplist.SitemapsComponent;
+import net.daverix.habanero.sitemaplist.SitemapListComponent;
 
 import javax.inject.Singleton;
 
@@ -41,6 +42,7 @@ public class HabaneroApplication extends Application {
             RestModule.class
     })
     public interface AppComponent {
-        SitemapsComponent.Builder sitemapComponentBuilder();
+        SitemapListComponent.Builder sitemapComponentBuilder();
+        PageComponent.Builder pageComponentBuilder();
     }
 }

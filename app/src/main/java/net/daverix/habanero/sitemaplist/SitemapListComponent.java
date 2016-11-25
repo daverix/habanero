@@ -17,27 +17,20 @@
 */
 package net.daverix.habanero.sitemaplist;
 
-import net.daverix.habanero.PageOpener;
-import net.daverix.habanero.rest.OpenHabService;
+import net.daverix.habanero.PageOpenerModule;
 
-import javax.inject.Inject;
+import dagger.Subcomponent;
 
-import io.reactivex.Observable;
+@Subcomponent(modules = {
+        PageOpenerModule.class,
+        SitemapListModule.class
+})
+public interface SitemapListComponent {
+    void inject(SitemapListFragment sitemapListFragment);
 
-public class OnlineSitemapsProvider implements SitemapsProvider {
-    private final OpenHabService openHabService;
-    private final PageOpener pageOpener;
-
-    @Inject
-    public OnlineSitemapsProvider(OpenHabService openHabService, PageOpener pageOpener) {
-        this.openHabService = openHabService;
-        this.pageOpener = pageOpener;
-    }
-
-    @Override
-    public Observable<SitemapItemViewModel> getSitemaps() {
-        return openHabService.getSitemaps()
-                .flatMap(Observable::fromIterable)
-                .map(x -> new SitemapItemViewModel(x.getName(), x.getLabel(), pageOpener));
+    @Subcomponent.Builder
+    interface Builder {
+        Builder pageOpener(PageOpenerModule module);
+        SitemapListComponent build();
     }
 }

@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package net.daverix.habanero.sitemaplist;
+package net.daverix.habanero.page;
 
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
@@ -23,43 +23,37 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import net.daverix.habanero.R;
-import net.daverix.habanero.databinding.SitemapItemBinding;
+import net.daverix.habanero.databinding.WidgetItemTitleBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SitemapListAdapter extends RecyclerView.Adapter<SitemapListAdapter.ViewHolder> {
-    private final List<SitemapItemViewModel> items = new ArrayList<>();
+public class WidgetListAdapter extends RecyclerView.Adapter<WidgetListAdapter.ViewHolder> {
     private final LayoutInflater inflater;
+    private final List<WidgetItemViewModel> items = new ArrayList<>();
 
-    public SitemapListAdapter(LayoutInflater inflater) {
-        if(inflater == null)
-            throw new IllegalArgumentException("inflater is null");
-
+    public WidgetListAdapter(LayoutInflater inflater) {
         this.inflater = inflater;
     }
 
-    public void addItem(SitemapItemViewModel item) {
-        if(item == null)
-            throw new IllegalArgumentException("item is null");
-
+    public void addItem(WidgetItemViewModel x) {
         synchronized (items) {
-            items.add(item);
+            items.add(x);
         }
-        notifyItemInserted(items.indexOf(item));
+        notifyItemInserted(items.indexOf(x));
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(DataBindingUtil.inflate(inflater,
-                R.layout.sitemap_item,
+                R.layout.widget_item_title,
                 parent,
                 false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.binding.setSitemap(items.get(position));
+        holder.binding.setWidget(items.get(position));
         holder.binding.executePendingBindings();
     }
 
@@ -69,9 +63,9 @@ public class SitemapListAdapter extends RecyclerView.Adapter<SitemapListAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final SitemapItemBinding binding;
+        final WidgetItemTitleBinding binding;
 
-        ViewHolder(SitemapItemBinding binding) {
+        public ViewHolder(WidgetItemTitleBinding binding) {
             super(binding.getRoot());
 
             this.binding = binding;

@@ -20,5 +20,5 @@ package net.daverix.habanero.sitemaplist;
 import io.reactivex.Observable;
 
 public interface SitemapsProvider {
-    Observable<SitemapViewModel> getSitemaps();
+    Observable<SitemapItemViewModel> getSitemaps();
 }

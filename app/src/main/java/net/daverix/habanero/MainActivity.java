@@ -17,6 +17,7 @@
 */
 package net.daverix.habanero;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -26,7 +27,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import net.daverix.habanero.databinding.ActivityMainBinding;
-import net.daverix.habanero.sitemaplist.SitemapsFragment;
+import net.daverix.habanero.page.PageActivity;
+import net.daverix.habanero.sitemaplist.SitemapListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PageOpener {
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity
 
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.content, new SitemapsFragment())
+                    .add(R.id.content, new SitemapListFragment())
                     .commit();
         }
     }
@@ -64,9 +66,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void openPage(String name) {
+    public void openPage(String name, String title) {
         //TODO: open activity or fragment to the right on tablet
-
-        Toast.makeText(this, "Should open page " + name, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, PageActivity.class);
+        intent.putExtra(PageActivity.EXTRA_TITLE, name);
+        intent.putExtra(PageActivity.EXTRA_NAME, name);
+        startActivity(intent);
     }
 }

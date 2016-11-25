@@ -18,21 +18,33 @@
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    
     <data>
         <variable
-            name="sitemap"
-            type="net.daverix.habanero.sitemaplist.SitemapItemViewModel" />
+            name="widget"
+            type="net.daverix.habanero.page.WidgetItemViewModel" />
     </data>
-
-    <TextView
+    
+    <FrameLayout 
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:onClick="@{(v) -> sitemap.onItemClicked()}"
-        android:text="@{sitemap.title}"
-        tools:text="This is an item"
-        android:gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:background="?selectableItemBackground" />
+        android:layout_height="56dp">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
+            android:layout_marginLeft="72dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="@{widget.title}"
+            tools:text="This is a widget item" />
+    </FrameLayout>
 </layout>
