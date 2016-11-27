@@ -16,12 +16,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/sites"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        tools:listitem="@layout/sitemap_item"/>
 </layout>
