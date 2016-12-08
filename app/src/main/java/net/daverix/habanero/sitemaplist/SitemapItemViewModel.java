@@ -39,6 +39,7 @@ public class SitemapItemViewModel extends BaseObservable {
     }
 
     public void onItemClicked() {
-        pageOpener.openPage(name, title);
+        if(pageOpener != null)
+            pageOpener.openPage(name, title);
     }
 }

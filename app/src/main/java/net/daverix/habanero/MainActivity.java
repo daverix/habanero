@@ -24,7 +24,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import net.daverix.habanero.databinding.ActivityMainBinding;
 import net.daverix.habanero.page.PageActivity;
@@ -66,11 +65,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void openPage(String name, String title) {
-        //TODO: open activity or fragment to the right on tablet
-        Intent intent = new Intent(this, PageActivity.class);
-        intent.putExtra(PageActivity.EXTRA_TITLE, name);
-        intent.putExtra(PageActivity.EXTRA_NAME, name);
-        startActivity(intent);
+    public void openPage(String id, String title) {
+        PageActivity.startActivity(this, id, title);
     }
 }

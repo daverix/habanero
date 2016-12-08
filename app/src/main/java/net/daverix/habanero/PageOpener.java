@@ -18,5 +18,5 @@
 package net.daverix.habanero;
 
 public interface PageOpener {
-    void openPage(String name, String title);
+    void openPage(String id, String title);
 }

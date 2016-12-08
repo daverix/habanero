@@ -20,5 +20,5 @@ package net.daverix.habanero.page;
 import io.reactivex.Observable;
 
 public interface WidgetsProvider {
-    Observable<WidgetItemViewModel> getWidgets(String name);
+    Observable<TitleWidgetItemViewModel> getWidgets(String name);
 }

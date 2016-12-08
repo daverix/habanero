@@ -17,9 +17,14 @@
 */
 package net.daverix.habanero.page;
 
+import net.daverix.habanero.ActivityModule;
+import net.daverix.habanero.PageOpenerModule;
+
 import dagger.Subcomponent;
 
 @Subcomponent(modules = {
+        ActivityModule.class,
+        PageOpenerModule.class,
         WidgetsProviderModule.class
 })
 public interface PageComponent {
@@ -27,6 +32,8 @@ public interface PageComponent {
 
     @Subcomponent.Builder
     interface Builder {
+        Builder activityModule(ActivityModule module);
+        Builder pageOpenerModule(PageOpenerModule pageOpenerModule);
         PageComponent build();
     }
 }

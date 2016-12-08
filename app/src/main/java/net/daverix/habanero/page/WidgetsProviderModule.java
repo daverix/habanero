@@ -17,11 +17,20 @@
 */
 package net.daverix.habanero.page;
 
+import java.util.Map;
+
 import dagger.Binds;
 import dagger.Module;
+import dagger.multibindings.Multibinds;
 
 @Module
 public abstract class WidgetsProviderModule {
     @Binds
     public abstract WidgetsProvider bindWidgetsProvider(OnlineWidgetsProvider provider);
+
+    @Multibinds
+    public abstract Map<Integer,ViewHolderFactory> bindViewHolderFactories();
+
+    @Binds
+    public abstract ViewHolderFactory provideDefaultViewHolderFactory(TitleWidgetViewHolderFactory factory);
 }

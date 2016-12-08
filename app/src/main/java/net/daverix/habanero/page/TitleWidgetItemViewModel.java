@@ -20,13 +20,38 @@ package net.daverix.habanero.page;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
-public class WidgetItemViewModel extends BaseObservable {
+import net.daverix.habanero.PageOpener;
+
+public class TitleWidgetItemViewModel extends BaseObservable implements WidgetViewModel {
+    private final String type;
+    private final String widgetId;
+    private final String pageId;
     private final String title;
     private final String icon;
+    private final PageOpener pageOpener;
 
-    public WidgetItemViewModel(String title, String icon) {
+    public TitleWidgetItemViewModel(String type,
+                                    String widgetId,
+                                    String pageId,
+                                    String title,
+                                    String icon,
+                                    PageOpener pageOpener) {
+        this.widgetId = widgetId;
+        this.type = type;
+        this.pageId = pageId;
         this.title = title;
         this.icon = icon;
+        this.pageOpener = pageOpener;
+    }
+
+    @Override
+    public long getId() {
+        return widgetId.hashCode();
+    }
+
+    @Override
+    public int getViewType() {
+        return type.hashCode();
     }
 
     @Bindable
@@ -40,6 +65,8 @@ public class WidgetItemViewModel extends BaseObservable {
     }
 
     public void onItemClicked() {
-
+        if(pageOpener != null && pageId != null) {
+            pageOpener.openPage(pageId, title);
+        }
     }
 }

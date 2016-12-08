@@ -17,15 +17,17 @@
 */
 package net.daverix.habanero.page;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import net.daverix.habanero.PageOpener;
 import net.daverix.habanero.R;
 
-public class PageActivity extends AppCompatActivity {
-    public static final String EXTRA_NAME = "name";
+public class PageActivity extends AppCompatActivity implements PageOpener {
+    public static final String EXTRA_ID = "name";
     public static final String EXTRA_TITLE = "title";
 
     @Override
@@ -35,15 +37,27 @@ public class PageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_page);
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra(EXTRA_NAME);
+        String pageId = intent.getStringExtra(EXTRA_ID);
         String title = intent.getStringExtra(EXTRA_TITLE);
 
         setTitle(title);
 
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.content_page, PageFragment.newInstance(name, title))
+                    .add(R.id.content_page, PageFragment.newInstance(pageId, title))
                     .commit();
         }
+    }
+
+    @Override
+    public void openPage(String id, String title) {
+        startActivity(this, id, title);
+    }
+
+    public static void startActivity(Context context, String id, String title) {
+        Intent intent = new Intent(context, PageActivity.class);
+        intent.putExtra(EXTRA_ID, id);
+        intent.putExtra(EXTRA_TITLE, title);
+        context.startActivity(intent);
     }
 }

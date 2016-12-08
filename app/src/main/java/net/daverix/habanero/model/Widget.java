@@ -27,6 +27,7 @@ public class Widget {
     private List<Mapping> mappings;
     private Item item;
     private Page linkedPage;
+    private List<Widget> widgets;
 
     public String getWidgetId() {
         return widgetId;
@@ -82,5 +83,13 @@ public class Widget {
 
     public void setLinkedPage(Page linkedPage) {
         this.linkedPage = linkedPage;
+    }
+
+    public List<Widget> getWidgets() {
+        return widgets;
+    }
+
+    public void setWidgets(List<Widget> widgets) {
+        this.widgets = widgets;
     }
 }

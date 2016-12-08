@@ -15,13 +15,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package net.daverix.habanero.model;
+package net.daverix.habanero.page;
 
+interface WidgetViewModel {
+    int getViewType();
 
-import java.util.List;
-
-public class StateDescription {
-    private String pattern;
-    private boolean readOnly;
-    private List<Option> options;
+    long getId();
 }

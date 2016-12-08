@@ -17,26 +17,27 @@
 */
 package net.daverix.habanero.page;
 
-import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
-import net.daverix.habanero.R;
-import net.daverix.habanero.databinding.WidgetItemTitleBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class WidgetListAdapter extends RecyclerView.Adapter<WidgetListAdapter.ViewHolder> {
-    private final LayoutInflater inflater;
-    private final List<WidgetItemViewModel> items = new ArrayList<>();
+import javax.inject.Inject;
 
-    public WidgetListAdapter(LayoutInflater inflater) {
-        this.inflater = inflater;
+public class WidgetListAdapter extends RecyclerView.Adapter<ViewHolder> {
+    private final List<WidgetViewModel> items = new ArrayList<>();
+    private final Map<Integer, ViewHolderFactory> factoryMap;
+    private final ViewHolderFactory defaultFactory;
+
+    @Inject
+    public WidgetListAdapter(Map<Integer,ViewHolderFactory> factoryMap, ViewHolderFactory defaultFactory) {
+        this.factoryMap = factoryMap;
+        this.defaultFactory = defaultFactory;
     }
 
-    public void addItem(WidgetItemViewModel x) {
+    public void addItem(WidgetViewModel x) {
         synchronized (items) {
             items.add(x);
         }
@@ -45,30 +46,31 @@ public class WidgetListAdapter extends RecyclerView.Adapter<WidgetListAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(DataBindingUtil.inflate(inflater,
-                R.layout.widget_item_title,
-                parent,
-                false));
+        ViewHolderFactory viewHolderFactory = factoryMap.get(viewType);
+        if(viewHolderFactory == null)
+            viewHolderFactory = defaultFactory;
+
+        return viewHolderFactory.create(parent);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.binding.setWidget(items.get(position));
-        holder.binding.executePendingBindings();
+        holder.bindWidget(items.get(position));
+        holder.executePendingBindings();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return items.get(position).getViewType();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return items.get(position).getId();
     }
 
     @Override
     public int getItemCount() {
         return items.size();
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        final WidgetItemTitleBinding binding;
-
-        public ViewHolder(WidgetItemTitleBinding binding) {
-            super(binding.getRoot());
-
-            this.binding = binding;
-        }
     }
 }

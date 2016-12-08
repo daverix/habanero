@@ -17,9 +17,13 @@
 */
 package net.daverix.habanero.page;
 
+import net.daverix.habanero.PageOpener;
 import net.daverix.habanero.model.Page;
 import net.daverix.habanero.model.Sitemap;
+import net.daverix.habanero.model.Widget;
 import net.daverix.habanero.rest.OpenHabService;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,20 +31,56 @@ import io.reactivex.Observable;
 
 public class OnlineWidgetsProvider implements WidgetsProvider {
     private final OpenHabService openHabService;
+    private final PageOpener pageOpener;
 
     @Inject
-    public OnlineWidgetsProvider(OpenHabService openHabService) {
+    public OnlineWidgetsProvider(OpenHabService openHabService, PageOpener pageOpener) {
         this.openHabService = openHabService;
+        this.pageOpener = pageOpener;
     }
 
     @Override
-    public Observable<WidgetItemViewModel> getWidgets(String name) {
+    public Observable<TitleWidgetItemViewModel> getWidgets(String name) {
         return openHabService.getSitemap(name)
                 .filter(x -> x.getHomepage() != null)
                 .map(Sitemap::getHomepage)
                 .filter(x -> x.getWidgets() != null)
                 .map(Page::getWidgets)
                 .flatMapObservable(Observable::fromIterable)
-                .map(x -> new WidgetItemViewModel(x.getLabel(), x.getIcon()));
+                .flatMap(widget -> {
+                    List<Widget> children = widget.getWidgets();
+                    if("Frame".equals(widget.getType()) && children != null && children.size() > 0) {
+                        Observable<Widget> childrenObservable = Observable.fromIterable(children);
+                        String label = widget.getLabel();
+                        if(label != null && !label.isEmpty()) {
+                            return Observable.just(widget).concatWith(childrenObservable);
+                        }
+
+                        return childrenObservable;
+                    }
+
+                    return Observable.just(widget);
+                })
+                .map(widget -> {
+                    Page linkedPage = widget.getLinkedPage();
+                    if(linkedPage != null) {
+                        String pageId = linkedPage.getId();
+                        if(pageId != null) {
+                            return new TitleWidgetItemViewModel(widget.getType(),
+                                    widget.getWidgetId(),
+                                    pageId,
+                                    widget.getLabel(),
+                                    widget.getIcon(),
+                                    pageOpener);
+                        }
+                    }
+
+                    return new TitleWidgetItemViewModel(widget.getType(),
+                            widget.getWidgetId(),
+                            null,
+                            widget.getLabel(),
+                            widget.getIcon(),
+                            null);
+                });
     }
 }

@@ -22,7 +22,7 @@
     <data>
         <variable
             name="widget"
-            type="net.daverix.habanero.page.WidgetItemViewModel" />
+            type="net.daverix.habanero.page.TitleWidgetItemViewModel" />
     </data>
     
     <FrameLayout 

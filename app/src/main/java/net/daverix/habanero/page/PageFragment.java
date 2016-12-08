@@ -26,7 +26,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import net.daverix.habanero.ActivityModule;
 import net.daverix.habanero.HabaneroApplication;
+import net.daverix.habanero.PageOpener;
+import net.daverix.habanero.PageOpenerModule;
 import net.daverix.habanero.R;
 import net.daverix.habanero.databinding.FragmentPageBinding;
 
@@ -37,26 +40,27 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class PageFragment extends Fragment {
-    private static final String ARG_NAME = "name";
+    private static final String ARG_PAGE_ID = "name";
     private static final String ARG_TITLE = "title";
 
     @Inject
     WidgetsProvider widgetsProvider;
-    private WidgetListAdapter adapter;
+    @Inject
+    WidgetListAdapter adapter;
     private Disposable widgetsDisposable;
 
     private String name;
     private String title;
 
-    public static PageFragment newInstance(String name, String title) {
-        if (name == null)
+    public static PageFragment newInstance(String pageId, String title) {
+        if (pageId == null)
             throw new IllegalArgumentException("name is null");
         if (title == null)
             throw new IllegalArgumentException("title is null");
 
         PageFragment fragment = new PageFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_NAME, name);
+        args.putString(ARG_PAGE_ID, pageId);
         args.putString(ARG_TITLE, title);
         fragment.setArguments(args);
         return fragment;
@@ -69,12 +73,14 @@ public class PageFragment extends Fragment {
         Bundle args = getArguments();
         if (args == null) throw new IllegalArgumentException("arguments not set");
 
-        name = args.getString(ARG_NAME);
+        name = args.getString(ARG_PAGE_ID);
         title = args.getString(ARG_TITLE);
 
         ((HabaneroApplication) getActivity().getApplication())
                 .appComponent()
                 .pageComponentBuilder()
+                .activityModule(new ActivityModule(getActivity()))
+                .pageOpenerModule(new PageOpenerModule((PageOpener) getActivity()))
                 .build()
                 .inject(this);
     }
@@ -82,8 +88,6 @@ public class PageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        adapter = new WidgetListAdapter(inflater);
-
         FragmentPageBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page, container, false);
         binding.pages.setAdapter(adapter);
         binding.pages.setLayoutManager(new LinearLayoutManager(getContext()));
